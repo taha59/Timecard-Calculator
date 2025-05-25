@@ -100,13 +100,9 @@ def add_durations(times):
     return f"{total_hours}:{remaining_minutes:02d}"
 
 
-# @app.route("/")
-# def serve_react_app():
-#     return send_from_directory(app.static_folder, "index.html")
-
-# @app.route("/<path:path>")
-# def serve_static_files(path):
-#     return send_from_directory(app.static_folder, path)
+@app.route('/')
+def health_check():
+    return "Backend is running!"
 
 @app.route("/upload_timecard", methods=["POST"])
 def upload_timecard():
