@@ -18,19 +18,46 @@ CORS(app, resources={
 client = Groq(api_key=GROQ_API_KEY)
 
 PROMPT = """
-You are given an image of a timecard. Your task is to extract the working hours for each day of the week.
+**Task:** Extract working hours from multiple timecards in an image.
 
-Return the result as a JSON list, where each item looks like this:
+**Input:** An image containing multiple timecards.
 
-{
-  "day": "Monday",
-  "time_in": "08:00 AM",
-  "time_out": "04:30 PM"
-}
+**Output:** A JSON list of timecard data, where each item represents a timecard and has the following structure:
+```json
+[
+  {
+    "name": "Taha",
+    "days": [
+      {
+        "day": "Monday",
+        "time_in": "08:00 AM",
+        "time_out": "04:30 PM"
+      },
+      {
+        "day": "Tuesday",
+        "time_in": "09:00 AM",
+        "time_out": "05:00 PM"
+      }
+    ]
+  },
+  {
+    "name": "Timecard 2",
+    "days": [
+      {
+        "day": "Wednesday",
+        "time_in": "08:30 AM",
+        "time_out": "04:00 PM"
+      }
+    ]
+  }
+]
+```
+**Constraints:**
 
-- Only include days that are present on the timecard.
-- Use 12-hour format with AM/PM.
-- Do not include any extra commentary — just valid JSON.
+* If a name is not present on a timecard, label it as "Timecard 1", "Timecard 2", etc.
+* Only include days that have time ins and outs. Ignore the rest
+* Use 12-hour time format with AM/PM.
+* Only reply in JSON.
 """
 
 
@@ -120,37 +147,36 @@ def upload_timecard():
         return jsonify(response_text), 500
 
     try:
-        parsed_json = json.loads(response_text)
+        timecards = json.loads(response_text)
     except json.JSONDecodeError:
         return jsonify({"error": "Failed to parse JSON", "raw_response": response_text}), 500
 
-    # Add duration calculation
+    #add hours calculated into the timecard
+    for timecard in timecards:
 
-    hours_list = []
-    for entry in parsed_json:
-        hours = calculate_hours(entry.get("time_in", ""), entry.get("time_out", ""))
+        hours_list = []
+        for entry in timecard["days"]:
+            hours = calculate_hours(entry.get("time_in", ""), entry.get("time_out", ""))
 
-        if hours is None:
-            return "Invalid time format"
+            if hours is None:
+                return "Invalid time format"
 
-        hours_list.append(hours)
-        entry["hours_worked"] = hours
+            hours_list.append(hours)
+            entry["hours_worked"] = hours
 
-    total_hours_worked = add_durations(hours_list)
+        total_hours_worked = add_durations(hours_list)
+        timecard["total_hours_worked"] = total_hours_worked
     
-
-    return jsonify({
-        "entries": parsed_json,
-        "total_hours_worked": total_hours_worked
-    })
+    return timecards
 
 @app.route("/edit_timecard", methods=["PUT"])
 def edit_timecard():
 
-    json_data = request.get_json()
+    entries = request.get_json()
     
+    # for timecard in timecards:
     hours_list = []
-    for entry in json_data:
+    for entry in entries:
         hours = calculate_hours(entry.get("time_in", ""), entry.get("time_out", ""))
 
         if hours is None:
@@ -160,8 +186,9 @@ def edit_timecard():
         entry["hours_worked"] = hours
 
     total_hours_worked = add_durations(hours_list)
-    return jsonify({
-        "entries": json_data,
+
+    return jsonify ({
+        "entries": entries,
         "total_hours_worked": total_hours_worked
     })
 
