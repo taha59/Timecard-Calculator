@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './../styles/Home.css';
 
+const getOrdinal = (n) => {
+  const s = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return s[(v - 20) % 10] || s[v] || s[0];
+};
+
 function Home() {
   const [file, setFile] = useState(null);
   const [data, setData] = useState([]);
@@ -9,6 +15,19 @@ function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const API_SERVER = process.env.REACT_APP_API_BASE_URL;
+
+  const renumberDays = (cards) => {
+    const updatedCards = [...cards];
+    const currentCard = updatedCards[selectedCardIndex];
+
+    currentCard.days = currentCard.days.map((entry, idx) => ({
+      ...entry,
+      day: `${idx + 1}${getOrdinal(idx + 1)} day`
+    }));
+
+    return updatedCards;
+  };
+
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -40,6 +59,42 @@ function Home() {
     updatedCards[selectedCardIndex].days[dayIndex][field] = value;
     setData(updatedCards);
   };
+
+  const handleAddEntry = (afterIndex) => {
+    const updatedCards = [...data];
+    const currentCard = updatedCards[selectedCardIndex];
+
+    const newEntry = {
+      day: "", // will be set in renumberDays
+      time_in: "",
+      time_out: "",
+      hours_worked: ""
+    };
+
+    currentCard.days.splice(afterIndex + 1, 0, newEntry);
+
+    const renumberedCards = renumberDays(updatedCards);
+    setData(renumberedCards);
+  };
+
+
+
+
+  const handleRemoveEntry = (dayIndex) => {
+    const updatedCards = [...data];
+    const currentCard = updatedCards[selectedCardIndex];
+
+    if (currentCard.days.length <= 1) {
+      setError("At least one time entry is required.");
+      return;
+    }
+
+    currentCard.days.splice(dayIndex, 1);
+
+    const renumberedCards = renumberDays(updatedCards);
+    setData(renumberedCards);
+  };
+
 
   const handleRecalculate = async () => {
     try {
@@ -89,9 +144,10 @@ function Home() {
             <h2>{selectedCard.name || `Timecard ${selectedCardIndex + 1}`}</h2>
             <ul className="day-list">
               {selectedCard.days.map((entry, dayIndex) => (
+                
                 <li key={dayIndex} className="day-entry">
                   <strong>{entry.day}</strong><br />
-
+                  
                   <label>Time In: </label>
                   <input
                     type="text"
@@ -138,6 +194,15 @@ function Home() {
                   value={entry.hours_worked} 
                   className="time-input"
                   readOnly />
+                  
+                  <button onClick={() => handleAddEntry(dayIndex)} className="add-after-btn">
+                    + Add After
+                  </button>
+
+                  <button onClick={() => handleRemoveEntry(dayIndex)} className="remove-current-btn">
+                    Remove Entry
+                  </button>
+
                 </li>
               ))}
             </ul>

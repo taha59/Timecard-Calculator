@@ -29,12 +29,12 @@ PROMPT = """
     "name": "Taha",
     "days": [
       {
-        "day": "Monday",
+        "day": "1st Day",
         "time_in": "08:00 AM",
         "time_out": "04:30 PM"
       },
       {
-        "day": "Tuesday",
+        "day": "2nd Day",
         "time_in": "09:00 AM",
         "time_out": "05:00 PM"
       }
@@ -44,7 +44,7 @@ PROMPT = """
     "name": "Timecard 2",
     "days": [
       {
-        "day": "Wednesday",
+        "day": "3rd Day",
         "time_in": "08:30 AM",
         "time_out": "04:00 PM"
       }
@@ -54,8 +54,9 @@ PROMPT = """
 ```
 **Constraints:**
 
-* If a name is not present on a timecard, label it as "Timecard 1", "Timecard 2", etc.
+* If a name is not present on a timecard, label it as "Timecard 1", "Timecard 2", etc. based on the order of the timecard
 * Only include days that have time ins and outs. Ignore the rest
+* Use day lables like "1st day", "2nd day", "3rd day", etc., based on the order it appears.
 * Use 12-hour time format with AM/PM.
 * Only reply in JSON.
 """
