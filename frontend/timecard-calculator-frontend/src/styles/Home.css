@@ -1,9 +1,12 @@
+/* General layout */
 .app-container {
   display: flex;
+  flex-direction: row;
   min-height: 100vh;
   font-family: Arial, sans-serif;
 }
 
+/* Sidebar */
 .sidebar {
   width: 220px;
   background: #f4f4f4;
@@ -19,7 +22,6 @@
 .timecard-list {
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
 .timecard-item {
@@ -29,28 +31,21 @@
   background: #fff;
   border-radius: 5px;
   border: 1px solid #ccc;
-  transition: background 0.2s;
-}
-
-.timecard-item:hover {
-  background: #eee;
+  transition: background 0.3s ease;
 }
 
 .timecard-item.active {
   background: #ddd;
 }
 
+/* Main content */
 .main-content {
   flex: 1;
   padding: 2rem;
 }
 
 .upload-section {
-  margin-bottom: 1rem;
-}
-
-.upload-section button {
-  margin-left: 1rem;
+  margin-top: 1rem;
 }
 
 .error-message {
@@ -58,55 +53,69 @@
   margin-top: 1rem;
 }
 
-.timecard-details {
-  margin-top: 2rem;
-}
-
 .day-list {
   padding: 0;
 }
 
 .day-entry {
-  list-style: none;
   margin-bottom: 1rem;
+  list-style: none;
 }
 
-.day-entry input {
+.time-input,
+.time-select {
+  width: 70px;
+  padding: 4px 6px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
   margin-right: 0.5rem;
-  margin-top: 0.2rem;
+  box-sizing: border-box;
 }
 
 .recalculate-btn {
   margin-top: 1rem;
   padding: 0.5rem 1rem;
-  background: #007bff;
-  color: #fff;
+  font-size: 16px;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
   cursor: pointer;
 }
 
 .recalculate-btn:hover {
-  background: #0056b3;
+  background-color: #0056b3;
 }
 
-.time-input {
-  width: 70px;          /* Width of input */
-  padding: 4px 6px;     /* Padding inside input */
-  font-size: 14px;      /* Text size */
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-right: 0.5rem; /* Space to the right */
-  box-sizing: border-box;
-}
+/* Responsive styles for iPhone/small devices */
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+  }
 
-.time-select {
-  padding: 4px 6px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-right: 1rem;   /* Space to the right */
-  background-color: white;
-  cursor: pointer;
-}
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #ccc;
+  }
 
+  .main-content {
+    padding: 1rem;
+  }
+
+  .time-input,
+  .time-select {
+    width: 60px;
+    font-size: 13px;
+  }
+
+  .recalculate-btn {
+    width: 100%;
+    padding: 0.75rem;
+  }
+
+  .day-entry {
+    font-size: 14px;
+  }
+}
