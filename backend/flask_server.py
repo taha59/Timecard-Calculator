@@ -3,10 +3,12 @@ import json
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from groq import Groq
-from datetime import timedelta, datetime
+from datetime import datetime
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
-app = Flask(__name__, static_folder="build", static_url_path="")
+app = Flask(__name__)
 
 GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
 

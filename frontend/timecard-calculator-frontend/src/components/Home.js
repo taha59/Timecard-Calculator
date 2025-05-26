@@ -45,7 +45,9 @@ function Home() {
 
     try {
       const res = await axios.post(`${API_SERVER}/upload_timecard`, formData);
+      
       setData(res.data);
+      setError(null); // Clear on success
     } catch (err) {
       console.error(err);
       setError("Failed to process timecard. Please try again.");
@@ -99,12 +101,14 @@ function Home() {
 
 
   const handleRecalculate = async () => {
+    setError(null)
     try {
       const res = await axios.put(`${API_SERVER}/edit_timecard`, data[selectedCardIndex].days);
       const updatedCards = [...data];
       updatedCards[selectedCardIndex].days = res.data.entries;
       updatedCards[selectedCardIndex].total_hours_worked = res.data.total_hours_worked;
       setData(updatedCards);
+      setError(null)
     } catch (err) {
       console.error(err);
       setError("Failed to recalculate hours.");
@@ -208,10 +212,12 @@ function Home() {
                 </li>
               ))}
             </ul>
-            <p><strong>Total Hours Worked:</strong> {selectedCard.total_hours_worked}</p>
-            <button onClick={handleRecalculate} className="recalculate-btn">
-              Recalculate Hours
-            </button>
+            <div className="floating-footer">
+              <span className="total-hours">Total: {selectedCard.total_hours_worked}</span>
+              <button onClick={handleRecalculate} className="recalculate-btn">
+                Recalculate Hours
+              </button>
+            </div>
           </div>
         )}
       </div>
