@@ -93,6 +93,8 @@ function Home() {
 
     const renumberedCards = renumberDays(updatedCards);
     setData(renumberedCards);
+
+    handleRecalculate()
   };
 
 
