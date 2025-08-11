@@ -1,4 +1,4 @@
-# Timecard-Reader
+# Timecard-Calculator
 
 ## Inspiration
 This web app was built to make my dad’s life easier. He owns a retail business and uses old-school handwritten timecards to track employee hours. I wanted to help automate this process, so I created an app that allows him to upload images of the timecards. The app then extracts the "time in" and "time out" information and calculates the total hours worked for each employee. Now, he no longer has to do the math by hand.
