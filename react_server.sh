@@ -1,1 +1,1 @@
-npm --prefix frontend/timecard-calculator-frontend start
+npm --prefix frontend run dev

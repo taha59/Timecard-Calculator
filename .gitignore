@@ -3,3 +3,4 @@ backend/__pycache__
 /build
 backend/myenv
 backend/build
+frontend/node_modules
